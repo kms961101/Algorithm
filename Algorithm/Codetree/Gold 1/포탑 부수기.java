@@ -2,163 +2,177 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    static class Player{
-        int x, y, d, s, gun, id;
+    static class Pair{
+        int x, y;
 
-        public Player(int x, int y, int d, int s, int gun, int id){
+        public Pair(int x, int y){
             this.x = x;
             this.y = y;
-            this.d = d;
-            this.s = s;
-            this.gun = gun;
-            this.id =  id;
         }
     }
-    static int n, m, k;
-    static int[] dx = {-1, 0, 1, 0};
-    static int[] dy = {0, 1, 0, -1};
-    static int[] score;
-    static int[][] isInPlayer;
-    static PriorityQueue<Integer>[][] map;
-    static ArrayList<Player> player = new ArrayList<>();
+    static int N, M, K;
+    static int[][] map, lastAtack, backX, backY;
+    static boolean[][] visited;
+    static int[] dx = {0, 1, 0, -1, -1, 1, -1, 1};
+    static int[] dy = {1, 0, -1, 0, -1, -1, 1, 1};
     public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        n = Integer.parseInt(st.nextToken());
-        m = Integer.parseInt(st.nextToken());
-        k = Integer.parseInt(st.nextToken());
-        map = new PriorityQueue[n][n];
-        score = new int[m];
-        isInPlayer = new int[n][n];
-        for(int i = 0; i < n; i++){
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
+        K = Integer.parseInt(st.nextToken());
+        map = new int[N][M];
+        lastAtack = new int[N][M];
+        backX = new int[N][M];
+        backY = new int[N][M];
+
+        for(int i = 0; i < N; i++){
             st = new StringTokenizer(br.readLine());
-            for(int j = 0; j < n; j++){
-                map[i][j] = new PriorityQueue<>(Collections.reverseOrder());
-                map[i][j].add(Integer.parseInt(st.nextToken()));
-            }
+            for(int j = 0; j < M; j++) map[i][j] = Integer.parseInt(st.nextToken());
         }
 
-        for(int i = 0; i < m; i++){
-            st = new StringTokenizer(br.readLine());
-            int x = Integer.parseInt(st.nextToken()) - 1;
-            int y = Integer.parseInt(st.nextToken()) - 1;
-            int d = Integer.parseInt(st.nextToken());
-            int s = Integer.parseInt(st.nextToken());
-            isInPlayer[x][y]++;
-            player.add(new Player(x, y, d, s, 0, i));
+        int time = 1;
+        while(K-- > 0){
+            // 포탑이 1개만 남으면 종료
+            if(isFinished()) break;
+            // 공격자 정하기
+            Pair attacker = selectAttacker();
+            // 타겟 정하기
+            Pair target = selectTarget();
+            // 공격자 핸디캡 적용
+            map[attacker.x][attacker.y] += N + M;
+            // 최근 포탑으로 갱신
+            lastAtack[attacker.x][attacker.y] = time++;
+            if(tryRaser(attacker, target)) bomb(attacker, target);
+            visited[attacker.x][attacker.y] = true;
+            // 포탑 정비
+            fix();
         }
-
-        while(k-- > 0){
-            // 플레이어 순서대로 한명씩 진행
-            for(int i = 0; i < m; i++){
-                Player p = player.get(i);
-                // 이동
-                movePlayer(p);
-
-                // 이동한 곳에 플레이어가 있으면 싸운다
-                if(isInPlayer[p.x][p.y] > 1) fight(p);
-                else changeGun(p);
-            }
+        int max = 0;
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < M; j++) max = Math.max(max, map[i][j]);
         }
-
-        for(int i = 0; i < m - 1; i++){
-            System.out.print(score[i] + " ");
-        }
-        System.out.print(score[m - 1]);
+        System.out.println(max);
     }
 
-    static void movePlayer(Player p){
-        isInPlayer[p.x][p.y]--;
-        int nx = p.x + dx[p.d];
-        int ny = p.y + dy[p.d];
-        // 범위 넘어가면 방향 바꿔서 이동
-        if(isIn(nx, ny)){
-            changeDir(p);
-            nx = p.x + dx[p.d];
-            ny = p.y + dy[p.d];
+    static boolean isFinished(){
+        int cnt = 0;
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < M; j++) if(map[i][j] != 0) cnt++;
         }
-        isInPlayer[nx][ny]++;
-        p.x = nx;
-        p.y = ny;
-
+        return cnt == 1 ? true : false;
     }
 
-    static void changeGun(Player p){
-        int nowGun = map[p.x][p.y].peek();
-        if(p.gun == 0 && nowGun == 0) return;
-        if(p.gun < nowGun){
-            map[p.x][p.y].add(p.gun);
-            p.gun = nowGun;
-            map[p.x][p.y].poll();
-        }
-
-    }
-
-    static void fight(Player p){
-        // 같은 위치 플레이어 찾기
-        Player fightPlayer = null;
-        for(int i = 0; i < m; i++){
-            if(p.id == i) continue;
-            Player next = player.get(i);
-            if(p.x == next.x && p.y == next.y){
-                fightPlayer = next;
-                break;
+    static Pair selectAttacker(){
+        int minP = Integer.MAX_VALUE, minX = -1, minY = -1, maxT = -1;
+        for(int sum = M + N - 2; sum >= 0; sum--){
+            for(int j = M - 1; j >= 0; j--){
+                int i = sum - j;
+                if(i < 0 || i >= N || map[i][j] == 0) continue;
+                if(minP > map[i][j]){
+                    minP = map[i][j];
+                    minX = i;
+                    minY = j;
+                    maxT = lastAtack[i][j];
+                }else if(minP == map[i][j] && maxT < lastAtack[i][j]){
+                    minP = map[i][j];
+                    minX = i;
+                    minY = j;
+                    maxT = lastAtack[i][j];
+                }
             }
         }
-
-        Player winPlayer = p;
-        Player losePlayer = fightPlayer;
-
-
-        // 능력치 + 총
-        if(p.gun + p.s < fightPlayer.gun + fightPlayer.s){
-            score[fightPlayer.id] += (fightPlayer.gun + fightPlayer.s) - (p.gun + p.s);
-            winPlayer = fightPlayer;
-            losePlayer = p;
-        }
-        else if(p.gun + p.s > fightPlayer.gun + fightPlayer.s) score[p.id] += (p.gun + p.s) - (fightPlayer.gun + fightPlayer.s);
-        else{
-            // 능력치 순으로
-            if(p.s > fightPlayer.s) score[p.id] += (p.gun + p.s) - (fightPlayer.gun + fightPlayer.s);
-            else {
-                score[fightPlayer.id] += (fightPlayer.gun + fightPlayer.s) - (p.gun + p.s);
-                winPlayer = fightPlayer;
-                losePlayer = p;
-            }
-        }
-
-
-        // 진사람
-        map[losePlayer.x][losePlayer.y].add(losePlayer.gun);
-        losePlayer.gun = 0;
-        isInPlayer[losePlayer.x][losePlayer.y]--;
-        int moveX = 0, moveY = 0;
-        for(int i = 0; i < 4; i++){
-            moveX = losePlayer.x + dx[losePlayer.d];
-            moveY = losePlayer.y + dy[losePlayer.d];
-            if(isIn(moveX, moveY) || isInPlayer[moveX][moveY] > 0) losePlayer.d = (losePlayer.d + 1) % 4;
-            else break;
-        }
-        isInPlayer[moveX][moveY]++;
-        losePlayer.x = moveX;
-        losePlayer.y = moveY;
-        changeGun(losePlayer);
-
-        // 이긴사람
-
-        changeGun(winPlayer);
-
+        return new Pair(minX, minY);
     }
 
-    static boolean isIn(int x, int y){
-        if(x < 0 || y < 0 || x >= n || y >= n) return true;
+    static Pair selectTarget(){
+        int maxP = 0, maxX = -1, maxY = -1, minT = Integer.MAX_VALUE;
+        for(int sum = 0; sum <= M + N - 2; sum++){
+            for(int j = 0; j < M; j++){
+                int i = sum - j;
+                if(i < 0 || i >= N || map[i][j] == 0) continue;
+                if(maxP < map[i][j]){
+                    maxP = map[i][j];
+                    maxX = i;
+                    maxY = j;
+                    minT = lastAtack[i][j];
+                }else if(maxP == map[i][j] && minT > lastAtack[i][j]){
+                    maxP = map[i][j];
+                    maxX = i;
+                    maxY = j;
+                    minT = lastAtack[i][j];
+                }
+            }
+        }
+        return new Pair(maxX, maxY);
+    }
+
+    static boolean tryRaser(Pair attacker, Pair target){
+        Queue<Pair> q = new LinkedList<>();
+        visited = new boolean[N][M];
+        q.add(attacker);
+        visited[attacker.x][attacker.y] = true;
+        boolean flag = true;
+        // 이전 값 저장해 놓고 찾기
+        while(!q.isEmpty()){
+            Pair now = q.poll();
+            for(int i = 0; i < 4; i++){
+                int nx = (now.x + dx[i] + N) % N;
+                int ny = (now.y + dy[i] + M) % M;
+                if(map[nx][ny] == 0 || visited[nx][ny]) continue;
+                backX[nx][ny] = now.x;
+                backY[nx][ny] = now.y;
+                visited[nx][ny] = true;
+                if(nx == target.x && ny == target.y) flag = false;
+                q.add(new Pair(nx, ny));
+            }
+            if(!flag) break;
+        }
+        // 타겟까지 못가면 bomb 실행
+        if(flag) return flag;
+
+        // 갈 수 있다면
+        visited = new boolean[N][M];
+
+
+        int goX = target.x;
+        int goY = target.y;
+
+        while(goX != attacker.x || goY != attacker.y){
+            int power = map[attacker.x][attacker.y] / 2;
+            if(goX == target.x && goY == target.y) power = map[attacker.x][attacker.y];
+            attack(goX, goY, power);
+            int tempX = goX;
+            goX = backX[goX][goY];
+            goY = backY[tempX][goY];
+        }
+
         return false;
     }
 
-    static void changeDir(Player p){
-        if(p.d == 0) p.d = 2;
-        else if(p.d == 1) p.d = 3;
-        else if(p.d == 2) p.d = 0;
-        else p.d = 1;
+    static void bomb(Pair attacker, Pair target){
+        visited = new boolean[N][M];
+        for(int i = 0; i < 8; i++){
+            int nx = (target.x + dx[i] + N) % N;
+            int ny = (target.y + dy[i] + M) % M;
+            if(map[nx][ny] == 0) continue;
+            if(nx == attacker.x && ny == attacker.y) continue;
+            attack(nx, ny, map[attacker.x][attacker.y] / 2);
+        }
+        attack(target.x, target.y, map[attacker.x][attacker.y]);
+    }
+
+    static void fix(){
+        for(int i = 0; i < N; i++){
+            for(int j = 0; j < M; j++){
+                if(visited[i][j] || map[i][j] == 0) continue;
+                map[i][j]++;
+            }
+        }
+    }
+
+    static void attack(int x, int y, int power){
+        visited[x][y] = true;
+        map[x][y] = Math.max(0, map[x][y] - power);
     }
 }
