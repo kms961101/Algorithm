@@ -151,7 +151,7 @@ public class Main {
         int startX = -1;
         int startY = -1;
         for(int i = 0; i < N - minD; i++){
-            for(int j = 0; j < M - minD; j++){
+            for(int j = 0; j < N - minD; j++){
                 boolean isInPerson = false;
                 boolean isInExit = false;
                 for(int a = i; a <= i + minD; a++){
@@ -177,9 +177,9 @@ public class Main {
         int[][] a = new int[N][N];
         int[][] b = new int[N][N];
         // 이동하는 좌표의 위치를 0, 0부터 시작하게 이동
-        for(int i = 0; i <= startX + minD; i++){
-            for(int j = 0; j <= startY + minD; j++){
-                a[i][j] = miro[i + startX][j + startY];
+        for(int i = startX; i <= startX + minD; i++){
+            for(int j = startY; j <= startY + minD; j++){
+                a[i - startX][j - startY] = miro[i][j];
             }
         }
 
@@ -194,9 +194,9 @@ public class Main {
         }
 
         // miro에 복구
-        for(int i = 0; i <= minD; i++){
-            for(int j = 0; j <= minD; j++){
-                miro[startX + i][startY + j] = b[i][j];
+        for(int i = startX; i < startX + d; i++){
+            for(int j = startY; j < startY + d; j++){
+                miro[i][j] = b[i - startX][j - startY];
             }
         }
     }
