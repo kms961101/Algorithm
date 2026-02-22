@@ -14,23 +14,27 @@ public class Main {
         }
 
         boolean flag = true;
+        if(M == 1) {
+        	System.out.println(0);
+        	System.exit(0);
+        }
         while(flag){
             ArrayList<Integer> copy = new ArrayList<>();
-            int cnt = 0;
+            int cnt = 1;
             int num = list.get(0);
             flag = false;
             for(int i = 1; i < list.size(); i++){
                 int now = list.get(i);
                 if(num == now) cnt++; // 같은 번호면 카운트 증가
-                else if(cnt <= M){ // 이전 번호랑 다르고, 수량이 M보다 작으면 
+                else if(cnt < M){ // 이전 번호랑 다르고, 수량이 M보다 작으면 
                     for(int j = 0; j < cnt; j++) copy.add(num); // 카운트 만큼 다시 리스트에 저장
                     num = now; // 이전 번호 현재로 갱신
-                    cnt = 0;
+                    cnt = 1;
                 }
                 else {
                 	flag = true; // 한번이라도 터지면 다시 확인 필요
                 	num = now;
-                    cnt = 0;
+                    cnt = 1;
                 }
             }
             if(list.size() >= 2 && list.get(list.size() - 2) != num) copy.add(num);
