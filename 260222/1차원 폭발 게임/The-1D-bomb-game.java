@@ -38,7 +38,7 @@ public class Main {
 	static int findEndIndex(int startIndex) {
 		int endIndex = startIndex + 1;
 		for(int i = startIndex; i < N; i++) {
-			if(arr[startIndex] == arr[endIndex]) endIndex++;
+			if(endIndex < N && arr[startIndex] == arr[endIndex]) endIndex++;
 			else break;;
 		}
 		return endIndex - 1;
