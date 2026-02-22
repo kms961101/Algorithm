@@ -2,49 +2,76 @@ import java.util.*;
 import java.io.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException{
+    static int MAX_NUM = 100;
+	static int[] arr = new int[MAX_NUM];
+	static int[] temp = new int[MAX_NUM];
+	static int N, M;
+	public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = new StringTokenizer(br.readLine());
-        int N = Integer.parseInt(st.nextToken());
-        int M = Integer.parseInt(st.nextToken());
-        ArrayList<Integer> list = new ArrayList<>();
+        N = Integer.parseInt(st.nextToken());
+        M = Integer.parseInt(st.nextToken());
         
-        for(int i = 0; i < N; i++){
-            list.add(Integer.parseInt(br.readLine()));
+        for(int i = 0; i < N; i++) {
+        	arr[i] = Integer.parseInt(br.readLine());
         }
-
-        boolean flag = true;
-        if(M == 1) {
-        	System.out.println(0);
-        	System.exit(0);
+        
+        boolean canMove = true;
+        while(canMove){
+        	canMove = false;
+        	for(int startIndex = 0; startIndex < N; startIndex++) {
+        		if(arr[startIndex] == 0) continue;
+        		// 같은 번호 있는지 찾기
+        		int endIndex = findEndIndex(startIndex);
+        		// M만큼 같은 수가 있으면 해당 범위 없애기
+        		if(endIndex - startIndex + 1 >= M) {
+        			makeZero(startIndex, endIndex);
+        			canMove = true;
+        		}
+        	}
+        	copyToTemp();
         }
-        while(flag){
-            ArrayList<Integer> copy = new ArrayList<>();
-            int cnt = 1;
-            int num = list.get(0);
-            flag = false;
-            for(int i = 1; i < list.size(); i++){
-                int now = list.get(i);
-                if(num == now) cnt++; // 같은 번호면 카운트 증가
-                else if(cnt < M){ // 이전 번호랑 다르고, 수량이 M보다 작으면 
-                    for(int j = 0; j < cnt; j++) copy.add(num); // 카운트 만큼 다시 리스트에 저장
-                    num = now; // 이전 번호 현재로 갱신
-                    cnt = 1;
-                }
-                else {
-                	flag = true; // 한번이라도 터지면 다시 확인 필요
-                	num = now;
-                    cnt = 1;
-                }
-            }
-            if(list.size() >= 2 && list.get(list.size() - 2) != num) copy.add(num);
-            if(list.size() < M) flag = false;
-            else list = copy;
-        }
-
-        System.out.println(list.size());
-        for(int i = 0; i < list.size(); i++) {
-        	System.out.println(list.get(i));
-        }
+        
+        printAnswer();
     }
+	
+	static int findEndIndex(int startIndex) {
+		int endIndex = startIndex + 1;
+		for(int i = startIndex; i < N; i++) {
+			if(arr[startIndex] == arr[endIndex]) endIndex++;
+			else break;;
+		}
+		return endIndex - 1;
+	}
+	
+	static void makeZero(int startIndex, int endIndex) {
+		for(int i = startIndex; i <= endIndex; i++) {
+			arr[i] = 0;
+		}
+	}
+	
+	static void copyToTemp() {
+		int nowIndex = 0;
+		for(int i = 0; i < N; i++) {
+			if(arr[i] == 0) continue;
+			temp[nowIndex++] = arr[i];
+		}
+		
+		arr = temp;
+		temp = new int[MAX_NUM];
+	}
+	
+	static void printAnswer() {
+		int cnt = 0;
+		for(int i = 0; i < N; i++) {
+			if(arr[i] == 0) break;
+			cnt++;
+		}
+		
+		System.out.println(cnt);
+		
+		for(int i = 0; i < cnt; i++) {
+			System.out.println(arr[i]);
+		}
+	}
 }
