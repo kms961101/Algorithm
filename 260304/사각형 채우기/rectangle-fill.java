@@ -9,7 +9,7 @@ public class Main {
         dp[3] = 3;
 
         for(int i = 4; i <= n; i++){
-            dp[i] = dp[i - 1] + dp[i - 2];
+            dp[i] = (dp[i - 1] + dp[i - 2]) % 10007;
         }
 
         System.out.println(dp[n]);
