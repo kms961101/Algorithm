@@ -3,25 +3,20 @@ import java.io.*;
 public class Main {
     static int[] dp = new int[1001];
     static int N;
-    static int INF = 987654321;
+    static int mod = 10007;
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
         N = sc.nextInt();
-        Arrays.fill(dp, INF);
-        dp[0] = 0;
-        move(0);
-        System.out.println(dp[N] == INF ? 0 : dp[N]);
-    }
 
-    static void move(int num){
-        if(num + 2 <= N && dp[num + 2] > dp[num] + 1){
-            dp[num + 2] = dp[num] + 1;
-            move(num + 2);
+        dp[0] = 1;
+        dp[1] = 0;
+        dp[2] = 1;
+        dp[3] = 1;
+        // 2칸, 3칸 전에서 올라오는 경우끼리 더한 값만 해당
+        for(int i = 4; i <= N; i++){
+            dp[i] = (dp[i - 2] + dp[i - 3]) % mod;
         }
 
-        if(num + 3 <= N && dp[num + 3] > dp[num] + 1){
-            dp[num + 3] = dp[num] + 1;
-            move(num + 3);
-        }
+        System.out.println(dp[N]);
     }
 }
