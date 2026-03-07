@@ -21,7 +21,7 @@ public class Main {
 	static int[] ry = {0, -1, 0, 1};
 	static Node now;
 	static boolean isEnd = false;
-	static boolean[][] visited;
+	static boolean[][][] visited;
 	public static void main(String[] args) throws IOException{
         BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
         StringTokenizer st = null;
@@ -30,13 +30,13 @@ public class Main {
         int x = Integer.parseInt(st.nextToken()) - 1;
         int y = Integer.parseInt(st.nextToken()) - 1;
         map = new char[n][n];
-        visited = new boolean[n][n];
+        visited = new boolean[n][n][4];
         for(int i = 0; i < n; i++) {
         	map[i] = br.readLine().toCharArray();
         }
         now = new Node(x, y, 0);
         while(true) {
-        	visited[now.x][now.y] = true;
+        	visited[now.x][now.y][now.dir] = true;
         	// Step 1 -  바라 보는 방향으로 이동 못 하는 경우
         	now = canMove(now.x, now.y, now.dir);
         	// 갈 수 없으면 끝내기
@@ -49,7 +49,7 @@ public class Main {
         	int rightX = now.x + rx[now.dir];
         	int rightY = now.y + ry[now.dir];
         	if(map[rightX][rightY] != '#') {
-        		visited[now.x][now.y] = true;
+        		visited[now.x][now.y][now.dir] = true;
         		int dir = (now.dir + 1) % 4; 
         		now.x += dx[dir];
         		now.y += dy[dir];
@@ -77,7 +77,7 @@ public class Main {
 				dir = dir - 1 == -1 ? 3 : dir - 1;
 			}
 			else {
-				if(visited[nx][ny]) continue;
+				if(visited[nx][ny][dir]) continue;
 				next = new Node(nx, ny, dir);
 				break;
 			}
