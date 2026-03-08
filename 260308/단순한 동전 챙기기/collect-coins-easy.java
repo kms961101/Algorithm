@@ -56,7 +56,7 @@ public class Main {
 			int cnt = 1;
 			int min = 0;
 			Node prev = null;
-			for(int i = 0; i < n; i++) {
+			for(int i = 0; i <= n; i++) {
 				if(!visited[i]) continue;
 				Node now = list.get(i);
 				if(cnt == 1) {
@@ -74,7 +74,7 @@ public class Main {
 		}
 		
 		
-		for(int i = idx; i < n; i++) {
+		for(int i = idx; i <= n; i++) {
 			visited[i] = true;
 			comb(i + 1, r - 1);
 			visited[i] = false;
