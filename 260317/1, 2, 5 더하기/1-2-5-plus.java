@@ -10,7 +10,7 @@ public class Main {
         for(int i = 1; i <= n; i++) {
         	for(int j = 0; j < 3; j++) {
         		if(i - arr[j] < 0) continue;
-        		dp[i] += dp[i - arr[j]] % 10007;
+        		dp[i] = (dp[i] + dp[i - arr[j]]) % 10007;
         	}
         }
         
