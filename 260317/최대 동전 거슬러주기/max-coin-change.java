@@ -8,7 +8,7 @@ public class Main {
 		int n = Integer.parseInt(st.nextToken());
 		int m = Integer.parseInt(st.nextToken());
 		int[] arr = new int[n];
-		int[] dp = new int[m + 1];
+		int[] dp = new int[10001];
 		st = new StringTokenizer(br.readLine());
 		for(int i = 0; i < n; i++) {
 			arr[i] = Integer.parseInt(st.nextToken());
