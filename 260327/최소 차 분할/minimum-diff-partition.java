@@ -28,7 +28,7 @@ public class Main {
         }
         
         for(int i = 1; i <= total; i++) {
-        	min = Math.min(min, Math.abs(i - (total - i)));
+        	if(dp[n][i]) min = Math.min(min, Math.abs(i - (total - i)));
         }
         
         System.out.println(min);
