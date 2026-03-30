@@ -3,7 +3,7 @@ import java.util.*;
 
 public class Main {
     static int MAX_N = 100;
-    static int MAX_M = 40;
+	static int MAX_M = 40;
 	static int MIN_M = 0;
 	static int offSet = 20;
     public static void main(String[] args) throws IOException{
@@ -11,7 +11,7 @@ public class Main {
         StringTokenizer st = new StringTokenizer(br.readLine());
         int N = Integer.parseInt(st.nextToken());
         int M = Integer.parseInt(st.nextToken());
-        int[][] dp = new int[MAX_N + 1][MAX_M + 1];
+        long[][] dp = new long[MAX_N + 1][MAX_M + 1];
         int[] arr = new int[N + 1];
         st = new StringTokenizer(br.readLine());
         for(int i = 1; i <= N; i++) {
