@@ -18,17 +18,14 @@ public class Main {
         	map.put(arr[i], num + 1);
         }
         
-        HashMap<Long, Boolean> visited = new HashMap<>();
         long ans = 0;
         for(int i = 0; i < N; i++) {
         	long num = arr[i];
-        	boolean flag = visited.getOrDefault(num, false);
-        	if(flag) continue;
         	long cnt = map.getOrDefault(K - num, 0L);
+        	if(K - num == num) cnt--;
         	if(cnt != 0) {
         		ans += cnt;
-        		visited.put(num, true);
-        		visited.put(K - num, true);
+        		map.put(num, map.get(num) - 1);
         	}
         }
         
