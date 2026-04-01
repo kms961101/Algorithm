@@ -22,7 +22,7 @@ public class Main {
         n = Integer.parseInt(st.nextToken());
         m = Integer.parseInt(st.nextToken());
         
-        node = new Node[n + 1];
+        node = new Node[m + 1];
         indegree = new int[n + 1];
         visited = new boolean[n + 1];
         edge = new ArrayList[n + 1];
