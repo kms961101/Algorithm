@@ -18,7 +18,7 @@ public class Main {
         int ans = 0;
         while(start <= end){
             int mid = (start + end) / 2;
-
+            if(mid == 0) break;
             if(findNum(mid)){
                 start = mid + 1;
                 ans = Math.max(ans, mid);
