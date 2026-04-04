@@ -16,7 +16,7 @@ public class Main {
         	for(int j = 0; j < N; j++) {
         		int abCnt = ab.getOrDefault(a[i] + b[j], 0);
         		ab.put(a[i] + b[j], abCnt + 1);
-        		int cdCnt = ab.getOrDefault(c[i] + d[j], 0);
+        		int cdCnt = cd.getOrDefault(c[i] + d[j], 0);
         		cd.put(c[i] + d[j], cdCnt + 1);
         	}
         }
