@@ -7,23 +7,26 @@ public class Main {
     	int N = Integer.parseInt(br.readLine());
     	StringTokenizer st = new StringTokenizer(br.readLine());
     	PriorityQueue<Integer> pq = new PriorityQueue<>();
-    	int[] arr = new int[N + 1];
-    	int[] dp = new int[N + 1];
-    	for(int i = 1; i <= N; i++) {
-    		int num = Integer.parseInt(st.nextToken());
-    		dp[i] = dp[i - 1] + num;
-    		arr[i] = num;
-    		pq.add(num);
+    	int[] arr = new int[N];
+    	for(int i = 0; i < N; i++) {
+    		arr[i] = Integer.parseInt(st.nextToken());
     	}
+    	// 앞에 i 번까지 빼면 뒤에는 i + 1 ~ N까지 이므로 뒤에서부터 더함
     	double ans = 0;
-    	for(int i = 1; i <= N - 2; i++) {
-    		int sum = dp[N] - dp[i];
-    		pq.remove(arr[i]);
+    	int sum = 0;
+    	pq.add(arr[N - 1]);
+    	sum += arr[N - 1];
+    	
+    	for(int i = N - 2; i >= 1; i--) {
+    		pq.add(arr[i]);
+    		sum += arr[i];
     		
-    		int first = pq.peek();
-    		ans = Math.max(ans, (sum - first) / (N - i - 1));
+    		double d = (double)(sum - pq.peek()) / (N - i - 1);
+    		
+    		if(ans < d)
+    			ans = d;
     	}
     	
-    	System.out.printf("%.2f", ans);
+    	System.out.printf("%.2f",ans);
     }
 }
