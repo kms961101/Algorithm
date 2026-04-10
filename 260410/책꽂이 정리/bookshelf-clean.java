@@ -84,6 +84,9 @@ public class Main {
     
     static Node pop_front(int i) {
     	Node ret = head[i];
+
+		if(ret == null) return ret;
+
     	head[i] = head[i].next;
     	ret.next = null;
     	
@@ -97,6 +100,9 @@ public class Main {
     
     static Node pop_back(int i) {
     	Node ret = tail[i];
+
+		if(ret == null) return ret;
+
     	tail[i] = tail[i].prev;
     	ret.prev = null;
     	
