@@ -137,7 +137,7 @@ public class Main {
     	
     	if(empty(j)) {
     		head[j] = head[i];
-    		tail[j] = tail[j];
+    		tail[j] = tail[i];
     	}
     	else {
     		connect(tail[i], head[j]);
