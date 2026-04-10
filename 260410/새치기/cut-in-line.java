@@ -64,6 +64,8 @@ public class Main {
     			lines.get(bLine).add(a);
     			
     			connect(peopleA.prev, peopleA.next);
+    			peopleA.prev = peopleA.next = null;
+    			
     			connect(peopleB.prev, peopleA);
     			connect(peopleA, peopleB);
     			
@@ -100,6 +102,7 @@ public class Main {
     			}
     			
     			connect(peopleA.prev, peopleB.next);
+    			peopleA.prev = peopleB.next = null;
     			connect(peopleC.prev, peopleA);
     			connect(peopleB, peopleC);
     		}
