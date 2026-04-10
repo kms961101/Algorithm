@@ -58,7 +58,7 @@ public class Main {
     			int aLine = numLine.getOrDefault(a, 0);
     			if(aLine == 0) continue;
     			int bLine = numLine.getOrDefault(b, 0);
-    			
+    			if(bLine == 0) continue;
     			numLine.put(a, bLine);
     			lines.get(aLine).remove(a);
     			lines.get(bLine).add(a);
