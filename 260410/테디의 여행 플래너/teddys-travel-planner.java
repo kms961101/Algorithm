@@ -31,8 +31,11 @@ public class Main {
     	
     	head = pinset = node[0];
     	tail = node[N - 1];
-    	
+    	int cnt = 0;
     	while(Q-- > 0) {
+    		if(cnt++ == 21) {
+    			System.out.print("");
+    		}
     		st = new StringTokenizer(br.readLine());
     		int type = Integer.parseInt(st.nextToken());
     		if(type == 1) {
@@ -44,8 +47,11 @@ public class Main {
     			if(pinset == null) pinset = tail;
     		}
     		else if(type == 3) {
-    			if(pinset.next == null || head == null) continue;
-    			connect(pinset, pinset.next.next);
+    			if(pinset.next == null && head.equals(tail)) continue;
+    			if(pinset.next != null) connect(pinset, pinset.next.next);
+    			else {
+    				head = head.next;
+    			}
     		}
     		else if(type == 4) {
     			String a = st.nextToken();
