@@ -48,9 +48,13 @@ public class Main {
     		}
     		else if(type == 3) {
     			if(pinset.next == null && head.equals(tail)) continue;
-    			if(pinset.next != null) connect(pinset, pinset.next.next);
+    			if(pinset.next != null) {
+    				connect(pinset, pinset.next.next);
+    				if(pinset.next == null) tail = pinset;
+    			}
     			else {
     				head = head.next;
+    				head.prev = null;
     			}
     		}
     		else if(type == 4) {
