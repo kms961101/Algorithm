@@ -24,7 +24,8 @@ public class Main {
     		st = new StringTokenizer(br.readLine());
     		int A = Integer.parseInt(st.nextToken());
     		int B = Integer.parseInt(st.nextToken());
-    		System.out.println(prefix[B] - prefix[A - 1]);
+    		if(A != 0) System.out.println(prefix[B] - prefix[A - 1]);
+    		else System.out.println(prefix[B]);
     	}
     }
 }
