@@ -26,11 +26,15 @@ public class Main {
     	
     	for(int i = 1; i <= Q; i++) {
     		st = new StringTokenizer(br.readLine());
+    		
     		int a = Integer.parseInt(st.nextToken());
     		int b = Integer.parseInt(st.nextToken());
-    		int aCnt = map.containsKey(a) ? map.get(a) : map.get(treeSet.higher(a));
-    		int bCnt = map.containsKey(b) ? map.get(b) : map.get(treeSet.lower(b));
-    		System.out.println(bCnt - aCnt + 1);
+    		
+    		Integer aCnt = map.containsKey(a) ? map.get(a) : map.get(treeSet.higher(a));
+    		Integer bCnt = map.containsKey(b) ? map.get(b) : map.get(treeSet.lower(b));
+    		
+    		if(aCnt == null || bCnt == null) System.out.println(0);
+    		else System.out.println(bCnt - aCnt + 1);
     	}
     }
 }
