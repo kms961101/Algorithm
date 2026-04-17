@@ -2,7 +2,7 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-    public static void main(String[] args) throws IOException{
+   public static void main(String[] args) throws IOException{
     	BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
     	StringTokenizer st = new StringTokenizer(br.readLine());
     	
@@ -15,7 +15,7 @@ public class Main {
     		int num = Integer.parseInt(st.nextToken());
     		treeSet.add(num);
     	}
-    	
+    	treeSet.add((int)(1e9 + 1));
     	HashMap<Integer, Integer> map = new HashMap<>();
     	int cnt = 1;
     	for(Integer set : treeSet) {
@@ -30,11 +30,10 @@ public class Main {
     		int a = Integer.parseInt(st.nextToken());
     		int b = Integer.parseInt(st.nextToken());
     		
-    		Integer aCnt = map.containsKey(a) ? map.get(a) : map.get(treeSet.higher(a));
-    		Integer bCnt = map.containsKey(b) ? map.get(b) : map.get(treeSet.lower(b));
+    		int aCnt = map.get(treeSet.ceiling(a));
+    		int bCnt = map.get(treeSet.higher(b));
     		
-    		if(aCnt == null || bCnt == null) System.out.println(0);
-    		else System.out.println(bCnt - aCnt + 1);
+    		System.out.println(bCnt - aCnt);
     	}
     }
 }
