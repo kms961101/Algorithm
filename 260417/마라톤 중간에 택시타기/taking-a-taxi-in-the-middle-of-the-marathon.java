@@ -30,7 +30,7 @@ public class Main {
     	}
     	
     	for(int i = N - 1; i > 0; i--) {
-    		distR[i] = distL[i + 1] + Math.abs(node[i + 1].x - node[i].x) + Math.abs(node[i + 1].y - node[i].y);
+    		distR[i] = distR[i + 1] + Math.abs(node[i + 1].x - node[i].x) + Math.abs(node[i + 1].y - node[i].y);
     	}
     	int min = Integer.MAX_VALUE;
     	for(int i = 2; i < N; i++) {
