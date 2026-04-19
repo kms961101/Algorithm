@@ -12,7 +12,7 @@ public class Main {
     		arr[i] = line.charAt(i - 1);
     	}
     	
-    	int[][] prefix = new int[3][N + 1];
+    	long[][] prefix = new long[3][N + 1];
     	HashMap<Integer, Character> map = new HashMap<>();
     	map.put(0, 'C');
     	map.put(1, 'O');
