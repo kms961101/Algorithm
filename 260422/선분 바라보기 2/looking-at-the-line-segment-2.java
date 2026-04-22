@@ -3,18 +3,33 @@ import java.util.*;
 
 public class Main {
     static class Node implements Comparable<Node>{
-		int x, y, v;
+		int x, y, v, idx;
 		
-		Node(int x, int y, int v){
+		Node(int x, int y, int v, int idx){
 			this.x = x;
 			this.y = y;
 			this.v = v;
+			this.idx = idx;
 		}
 		
 		@Override
 		public int compareTo(Node n){
 			if(this.x == n.x) return this.v - n.v;
 			return this.x - n.x;
+		}
+	}
+	
+	static class Element implements Comparable<Element>{
+		int y, idx;
+		
+		Element(int y, int idx){
+			this.y = y;
+			this.idx = idx;
+		}
+		
+		@Override
+		public int compareTo(Element e){
+			return this.y - e.y;
 		}
 	}
     public static void main(String[] args) throws IOException{
@@ -28,35 +43,29 @@ public class Main {
     		int y = Integer.parseInt(st.nextToken());
     		int x1 = Integer.parseInt(st.nextToken());
     		int x2 = Integer.parseInt(st.nextToken());
-    		node.add(new Node(x1, y, 1));
-    		node.add(new Node(x2, y, -1));
+    		node.add(new Node(x1, y, 1, i));
+    		node.add(new Node(x2, y, -1, i));
     	}
     	
-    	TreeSet<Integer> colors = new TreeSet<>();
-    	int ans = 1;
-    	Node first = node.poll();
-    	int prevColor = first.y;
-    	colors.add(first.y);
-    	int cnt = 1;
-    	
+    	TreeSet<Element> colors = new TreeSet<>();
+    	boolean[] visited = new boolean[50000];
     	while(!node.isEmpty()) {
     		Node now = node.poll();
     		
-    		cnt += now.v;
-    		if(now.v == 1) colors.add(now.y);
-    		
-    		if(cnt >= 1 && colors.first() > now.y) {
-    			prevColor = now.y;
+    		if(now.v == 1) {
+    			colors.add(new Element(now.y, now.idx));
     		}
-    		else if(now.v == -1) {
-    			colors.remove(now.y);
-    			if(cnt >= 1 && prevColor != colors.first()) {
-    				ans++;
-    				prevColor = colors.first();
-    			}
+    		else {
+    			colors.remove(new Element(now.y, now.idx));
     		}
     		
+    		if(colors.isEmpty()) continue;
     		
+    		visited[colors.first().idx] = true;
+    	}
+    	int ans = 0;
+    	for(int i = 0; i <= 2 * N; i++) {
+    		if(visited[i]) ans++;
     	}
     	
     	System.out.println(ans);
