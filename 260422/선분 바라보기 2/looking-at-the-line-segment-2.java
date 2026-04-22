@@ -64,7 +64,7 @@ public class Main {
     		visited[colors.first().idx] = true;
     	}
     	int ans = 0;
-    	for(int i = 0; i <= 2 * N; i++) {
+    	for(int i = 0; i <= N; i++) {
     		if(visited[i]) ans++;
     	}
     	
