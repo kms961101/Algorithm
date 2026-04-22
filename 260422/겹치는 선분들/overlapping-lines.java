@@ -12,7 +12,7 @@ public class Main {
 		
 		@Override
 		public int compareTo(Node n){
-			//if(this.x == n.x) return n.v - this.v;
+			if(this.x == n.x) return this.v - n.v;
 			return this.x - n.x;
 		}
 	}
@@ -42,12 +42,16 @@ public class Main {
     	}
     	int ans = 0;
     	int cnt = 0;
+    	int prev = 0;
     	boolean check = false;
     	while(!pq.isEmpty()) {
     		Node now = pq.poll();
-    		cnt += now.v;
     		
-    		if(cnt >= K) ans++;
+    		if(cnt >= K) {
+    			ans += now.x - prev;
+    		}
+    		cnt += now.v;
+    		prev = now.x;
     	}
     	
     	System.out.println(ans);
